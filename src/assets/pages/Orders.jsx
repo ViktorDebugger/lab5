@@ -18,25 +18,38 @@ const Orders = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchOrders = async () => {
-      setIsLoading(true);
       try {
         if (currentUser) {
           const userOrders = await loadOrdersFirestore(currentUser.uid);
-          setOrders(userOrders || []);
-          setError(null);
+          if (isMounted) {
+            setOrders(userOrders || []);
+            setError(null);
+          }
         }
       } catch (error) {
         console.error("Помилка завантаження замовлень:", error);
-        if (error.message.includes("авторизація")) {
-          setError("Помилка авторизації. Будь ласка, увійдіть знову.");
+        if (isMounted) {
+          if (error.message.includes("авторизація")) {
+            setError("Помилка авторизації. Будь ласка, увійдіть знову.");
+          } else {
+            setError("Помилка завантаження замовлень. Спробуйте пізніше.");
+          }
         }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchOrders();
+
+    return () => {
+      isMounted = false;
+    };
   }, [currentUser]);
 
   const sortedOrders = orders.sort(
@@ -51,7 +64,7 @@ const Orders = () => {
 
       <section className="mt-4 max-w-[1490px] 2xl:mx-auto">
         {isLoading ? (
-            <div className="h-[380px] mt-4 text-white text-[20px] flex items-center justify-center">
+          <div className="h-[380px] mt-4 border-4 border-white rounded-lg text-white text-[20px] flex items-center justify-center">
             Завантаження...
           </div>
         ) : error ? (

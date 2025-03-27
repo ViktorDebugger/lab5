@@ -1,12 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../../../public/js/firebase.js";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-
-import BASE_URL from './../../services/baseUrl.js';
+import BASE_URL from "./../../services/baseUrl.js";
 
 const AuthContext = createContext();
 
@@ -20,30 +13,24 @@ export function AuthProvider({ children }) {
 
   const signup = async (email, password) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const idToken = await user.getIdToken();
-      const response = await fetch(`${BASE_URL}/api/login`, {
+      const response = await fetch(`${BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
         },
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        throw new Error("Помилка перевірки токена після реєстрації");
+        const error = await response.json();
+        throw new Error(error.message || "Помилка реєстрації");
       }
 
-      return idToken;
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      setCurrentUser(data.user);
+      return data.token;
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        throw new Error("Обліковий запис з такою електронною поштою вже існує");
-      }
       console.error("Помилка реєстрації:", error);
       throw error;
     }
@@ -51,55 +38,88 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const idToken = await user.getIdToken();
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
         },
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        throw new Error("Помилка перевірки токена");
+        const error = await response.json();
+        throw new Error(error.message || "Помилка входу");
       }
 
-      return idToken;
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      setCurrentUser(data.user);
+      return data.token;
     } catch (error) {
       console.error("Помилка входу:", error);
+      throw error;
     }
   };
 
   const logout = async () => {
     try {
-      const idToken = localStorage.getItem("token");
-      await fetch(`${BASE_URL}/api/logout`, {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch(`${BASE_URL}/api/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      await signOut(auth);
+
+      if (!response.ok) {
+        throw new Error("Помилка виходу");
+      }
+
       localStorage.removeItem("token");
+      setCurrentUser(null);
     } catch (error) {
       console.error("Помилка виходу:", error);
+      throw error;
     }
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCurrentUser(null);
+        setLoading(false);
+        return;
+      }
 
-    return unsubscribe;
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Помилка перевірки автентифікації");
+        }
+
+        const data = await response.json();
+        setCurrentUser(data.user);
+      } catch (error) {
+        console.error("Помилка перевірки автентифікації:", error);
+        setCurrentUser(null);
+        localStorage.removeItem("token");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   const value = {

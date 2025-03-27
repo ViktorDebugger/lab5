@@ -29,7 +29,7 @@ const Login = () => {
         emailRef.current.value,
         passwordRef.current.value
       );
-
+      
       if (idToken) {
         localStorage.setItem("token", idToken);
         setModalMessage("Вхід успішний!");
@@ -48,7 +48,7 @@ const Login = () => {
   const closeModal = () => {
     setModalVisible(false);
     if (!error) {
-      navigate("/lab5");
+      navigate("/");
     }
   };
 
@@ -105,13 +105,13 @@ const Login = () => {
         <p>Немає облікового запису?</p>
         <div className="mt-2 flex flex-col items-center">
           <Link
-            to="/lab5/signup"
+            to="/signup"
             className="inline-block w-full md:w-[60%] bg-white px-4 py-2.5 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out text-blue-500"
           >
             Зареєструватися
           </Link>
           <Link
-            to="/lab5"
+            to="/"
             className="inline-block w-full md:w-[60%] bg-white px-4 py-2.5 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out text-blue-500 mt-12"
           >
             Повернутись на головну

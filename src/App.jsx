@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Footer from "./assets/components/Footer.jsx";
 import Header from "./assets/components/Header.jsx";
 import Menu from "./assets/pages/Menu.jsx";
@@ -11,11 +11,11 @@ import Dashboard from "./assets/pages/Dashboard.jsx";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/lab5">
       <AuthProvider>
         <Routes>
           <Route
-            path="/lab5/signup"
+            path="/signup"
             element={
               <div className="flex min-h-screen items-center justify-center">
                 <div className="w-full max-w-md p-8">
@@ -25,7 +25,7 @@ function App() {
             }
           />
           <Route
-            path="/lab5/login"
+            path="/login"
             element={
               <div className="flex min-h-screen items-center justify-center">
                 <div className="w-full max-w-md p-8">
@@ -35,7 +35,7 @@ function App() {
             }
           />
           <Route
-            path="/lab5"
+            path="/"
             element={
               <div className="flex min-h-screen flex-col">
                 <Header />
@@ -45,7 +45,7 @@ function App() {
             }
           />
           <Route
-            path="/lab5/basket"
+            path="/basket"
             element={
               <div className="flex min-h-screen flex-col">
                 <Header />
@@ -55,7 +55,7 @@ function App() {
             }
           />
           <Route
-            path="/lab5/orders"
+            path="/orders"
             element={
               <div className="flex min-h-screen flex-col">
                 <Header />
@@ -65,7 +65,7 @@ function App() {
             }
           />
           <Route
-            path="/lab5/dashboard"
+            path="/dashboard"
             element={
               <div className="flex min-h-screen flex-col">
                 <Header />

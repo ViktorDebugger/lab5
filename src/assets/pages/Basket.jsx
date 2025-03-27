@@ -135,12 +135,15 @@ const Basket = () => {
       await saveBasketFirestore(user.uid, []);
       setBasket([]);
       setError(null);
-      navigate("/lab5/orders");
+      navigate("/orders");
     } catch (error) {
       console.error("Помилка оформлення замовлення:", error);
       if (error.message.includes("авторизація")) {
         setUser(null);
         setError("Помилка авторизації. Будь ласка, увійдіть знову.");
+      } else if (error.message.includes("Кількість страв повинна бути в межах від 1 до 10")) {
+        setModalMessage("Кількість страв повинна бути в межах від 1 до 10");
+        setModalVisible(true);
       } else {
         setError("Помилка оформлення замовлення. Спробуйте ще раз.");
       }
@@ -181,8 +184,13 @@ const Basket = () => {
 
   const closeModal = () => {
     setModalVisible(false);
-    navigate("/lab5/login");
+    navigate("/login");
   };
+
+  const closeModalWarning = () => {
+    setModalVisible(false);
+  };
+
 
   return (
     <main className="mx-auto w-full flex-grow max-w-[1490px] flex-1 rounded-lg py-4 text-center text-[30px]">
@@ -253,7 +261,7 @@ const Basket = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
             <p>{modalMessage}</p>
             <button
-              onClick={closeModal}
+              onClick={modalMessage === "Кількість страв повинна бути в межах від 1 до 10" ? closeModalWarning : closeModal}
               className="mt-4 w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
             >
               Закрити

@@ -9,7 +9,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import BASE_URL from './../../services/baseUrl.js';
+import BASE_URL from "./../../services/baseUrl.js";
 
 const Header = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -89,24 +89,18 @@ const Header = () => {
         <nav>
           <ul className="hidden items-center gap-2 text-[20px] sm:flex lg:gap-16">
             <li>
-              <Link to="/lab5" className={getLinkClasses("/lab5")}>
+              <Link to="/" className={getLinkClasses("/")}>
                 Меню
               </Link>
             </li>
             <li>
-              <Link
-                to="/lab5/basket"
-                className={getLinkClasses("/lab5/basket")}
-              >
+              <Link to="/basket" className={getLinkClasses("/basket")}>
                 Кошик
               </Link>
             </li>
             {!!user && (
               <li>
-                <Link
-                  to="/lab5/orders"
-                  className={getLinkClasses("/lab5/orders")}
-                >
+                <Link to="/orders" className={getLinkClasses("/orders")}>
                   Мої замовлення
                 </Link>
               </li>
@@ -114,17 +108,11 @@ const Header = () => {
 
             <li>
               {isAuthenticated ? (
-                <Link
-                  to="/lab5/dashboard"
-                  className={getLinkClasses("/lab5/dashboard")}
-                >
+                <Link to="/dashboard" className={getLinkClasses("/dashboard")}>
                   <FontAwesomeIcon icon={faUser} />
                 </Link>
               ) : (
-                <Link
-                  to="/lab5/login"
-                  className={getLinkClasses("/lab5/login")}
-                >
+                <Link to="/login" className={getLinkClasses("/login")}>
                   <FontAwesomeIcon icon={faRightToBracket} />
                 </Link>
               )}
@@ -148,8 +136,8 @@ const Header = () => {
           <ul className="flex w-[80%] flex-col gap-4">
             <li>
               <Link
-                to="/lab5"
-                className={getMobileLinkClasses("/lab5")}
+                to="/"
+                className={getMobileLinkClasses("/")}
                 onClick={() => setOpenSidebar(false)}
               >
                 Меню
@@ -157,8 +145,8 @@ const Header = () => {
             </li>
             <li>
               <Link
-                to="/lab5/basket"
-                className={getMobileLinkClasses("/lab5/basket")}
+                to="/basket"
+                className={getMobileLinkClasses("/basket")}
                 onClick={() => setOpenSidebar(false)}
               >
                 Кошик
@@ -167,8 +155,8 @@ const Header = () => {
             {!!user && (
               <li>
                 <Link
-                  to="/lab5/orders"
-                  className={getMobileLinkClasses("/lab5/orders")}
+                  to="/orders"
+                  className={getMobileLinkClasses("/orders")}
                   onClick={() => setOpenSidebar(false)}
                 >
                   Мої замовлення
@@ -178,8 +166,8 @@ const Header = () => {
             <li>
               {isAuthenticated ? (
                 <Link
-                  to="/lab5/dashboard"
-                  className={getMobileLinkClasses("/lab5/dashboard")}
+                  to="/dashboard"
+                  className={getMobileLinkClasses("/dashboard")}
                   onClick={() => setOpenSidebar(false)}
                 >
                   <FontAwesomeIcon icon={faUser} />
@@ -187,8 +175,8 @@ const Header = () => {
                 </Link>
               ) : (
                 <Link
-                  to="/lab5/login"
-                  className={getMobileLinkClasses("/lab5/login")}
+                  to="/login"
+                  className={getMobileLinkClasses("/login")}
                   onClick={() => setOpenSidebar(false)}
                 >
                   <FontAwesomeIcon icon={faRightToBracket} />

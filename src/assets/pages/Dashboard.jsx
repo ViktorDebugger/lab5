@@ -70,7 +70,7 @@ const Dashboard = () => {
   const closeModal = () => {
     setModalVisible(false);
     if (!error) {
-      navigate("/lab5");
+      navigate("/");
       window.location.reload();
     }
   };
